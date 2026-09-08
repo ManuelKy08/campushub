@@ -64,7 +64,7 @@ function logout_user(): void {
     $_SESSION = [];
     
     // Hapus cookie session
-    if (isset($_COokie[$session_name])) {
+    if (isset($_COOKIE[$session_name])) {
         setcookie(
             $session_name,
             '',

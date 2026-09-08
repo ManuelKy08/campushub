@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-# GRAND LINE LIBRARY — Start Localhost (MariaDB + PHP Server)
+# CAMPUSHUB — Start Localhost (MariaDB + PHP Server)
 # Created by Risky Manuel Tamba
 #
 # Cara pakai:
@@ -28,7 +28,7 @@ is_php_running() {
 }
 
 start() {
-    echo "=== GRAND LINE LIBRARY — Local Server ==="
+    echo "=== CAMPUSHUB — Local Server ==="
 
     # 1) MariaDB
     if is_mysql_running; then
@@ -61,24 +61,26 @@ start() {
         echo "  [OK] MariaDB jalan (port 3306)"
     fi
 
-    # 2) Pastikan database + user root pass kosong siap
+    # 2) Import database schema
     php -d extension=pdo_mysql -d pdo_mysql.default_socket="$MYSQL_SOCKET" -r '
         $sock = $argv[1];
         try {
             $p = new PDO("mysql:unix_socket=$sock;charset=utf8mb4", "rrsec", "");
             $p->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $p->exec("ALTER USER \"root\"@\"localhost\" IDENTIFIED VIA mysql_native_password USING PASSWORD(\"\")");
-            $p->exec("CREATE DATABASE IF NOT EXISTS grand_line_library");
-            $has = $p->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=\"grand_line_library\" AND table_name=\"books\"")->fetchColumn();
+            $p->exec("CREATE DATABASE IF NOT EXISTS campushub");
+            $has = $p->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=\"campushub\" AND table_name=\"users\"")->fetchColumn();
             if (!$has) {
                 $sql = file_get_contents($argv[2]);
                 $p->exec($sql);
-                echo "  [OK] Database grand_line_library diimport.\n";
+                echo "  [OK] Database campushub diimport.\n";
+            } else {
+                echo "  [OK] Database campushub sudah ada.\n";
             }
         } catch (Exception $e) {
             echo "  [WARN] DB skip: " . $e->getMessage() . "\n";
         }
-    ' "$MYSQL_SOCKET" "$PROJECT_DIR/database/grand_line_library.sql"
+    ' "$MYSQL_SOCKET" "$PROJECT_DIR/database/schema.sql"
 
     # 3) PHP server
     if is_php_running; then
@@ -104,13 +106,13 @@ start() {
     fi
 
     echo ""
-    echo "  🌊 Siap berlayar! Buka di browser:"
+    echo "  Campushub siap! Buka di browser:"
     echo ""
     echo "      http://$PHP_HOST:$PHP_PORT/"
     echo ""
-    echo "  Akun demo (password: password123):"
-    echo "      Admin : admin@grandline.local  (Monkey D. Dragon)"
-    echo "      Member: member@grandline.local (Roronoa Zoro)"
+    echo "  Akun demo:"
+    echo "      Admin: admin@campushub.id  (password: admin123)"
+    echo "      Atau daftar akun baru di /register.php"
     echo ""
     echo "  Untuk mematikan:  ./start-server.sh stop"
 }
