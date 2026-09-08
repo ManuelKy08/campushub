@@ -3,10 +3,10 @@
  * CampusHub - Halaman Detail Mata Kuliah
  * Menampilkan detail mata kuliah beserta materi dan tugas
  */
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/sidebar.php';
 
 require_login();
 $user = get_user();
@@ -42,11 +42,11 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($course['name'] ?? '') ?> - CampusHub</title>
-    <?php require_once __DIR__ . '/../includes/head-starter.php'; ?>
+    <?php require_once __DIR__ . '/includes/head-starter.php'; ?>
 </head>
 <body data-theme="light">
     <!-- Header -->
-    <?php require_once __DIR__ . '/../includes/header.php'; ?>
+    <?php require_once __DIR__ . '/includes/header.php'; ?>
     
     <div class="padding-x4">
         <!-- Breadcrumbs -->
@@ -183,7 +183,7 @@ try {
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+<?php require_once __DIR__ . '/includes/foot-starter.php'; ?>
 </body>
 </html>
 EOF

@@ -4,10 +4,10 @@
  * Menampilkan acara akademik dan deadline tugas
  * Fitur: View events, add events, filter by type
  */
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/sidebar.php';
 
 require_login();
 $user = get_user();
@@ -119,4 +119,4 @@ $user = get_user();
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+<?php require_once __DIR__ . '/includes/foot-starter.php'; ?>

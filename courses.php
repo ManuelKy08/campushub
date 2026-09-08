@@ -4,10 +4,10 @@
  * Menampilkan daftar mata kuliah yang terdaftar
  * Fitur: View courses, add new course
  */
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/sidebar.php';
 
 require_login();
 $user = get_user();
@@ -90,4 +90,4 @@ $user = get_user();
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+<?php require_once __DIR__ . '/includes/foot-starter.php'; ?>

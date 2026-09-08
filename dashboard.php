@@ -4,10 +4,10 @@
  * Menampilkan widget-widget ringkasan: kursus, tugas, materi, progres
  * Hanya diakses jika sudah login
  */
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/sidebar.php';
 
 // Cek otentikasi
 require_login();
@@ -162,4 +162,4 @@ $role = $user['role'];
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+<?php require_once __DIR__ . '/includes/foot-starter.php'; ?>

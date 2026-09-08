@@ -6,8 +6,8 @@
  */
 ?>
 <?php
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
 
 // Process login form
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - CampusHub</title>
-    <?php require_once __DIR__ . '/../includes/head-starter.php'; ?>
+    <?php require_once __DIR__ . '/includes/head-starter.php'; ?>
 </head>
 <body data-theme="light">
     <!-- Hero Section -->
@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         <p>Created by Risky Manuel Tamba</p>
     </footer>
     
-    <?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+    <?php require_once __DIR__ . '/includes/foot-starter.php'; ?>
 </body>
 </html>
 EOF

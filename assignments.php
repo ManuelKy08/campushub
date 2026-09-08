@@ -4,10 +4,10 @@
  * Menampilkan daftar tugas dengan filter berdasarkan status dan mata kuliah
  * Fitur: View assignments, add new assignment, filter by course/status
  */
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/sidebar.php';
 
 require_login();
 $user = get_user();
@@ -121,4 +121,4 @@ $user = get_user();
     </div>
 </div>
 
-<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
+<?php require_once __DIR__ . '/includes/foot-starter.php'; ?>
