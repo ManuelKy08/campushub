@@ -1,13 +1,11 @@
 <?php
-/**
- * CampusHub - Admin: Assignments Edit
- * Mengedit tugas yang sudah ada
- */
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_role('admin');
 
 $assignment_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$assignment = null;
+$errors = [];
 
 if ($assignment_id <= 0) {
     header('Location: /admin/assignments.php');
@@ -19,7 +17,6 @@ try {
     $stmt = $pdo->prepare("SELECT a.*, c.name as course_name FROM assignments a LEFT JOIN courses c ON a.course_id = c.id WHERE a.id = ?");
     $stmt->execute([$assignment_id]);
     $assignment = $stmt->fetch();
-    
     if (!$assignment) {
         header('Location: /admin/assignments.php');
         exit;
@@ -28,47 +25,85 @@ try {
     error_log('Assignment edit load error: ' . $e->getMessage());
     $assignment = null;
 }
-?>
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_assignment'])) {
+    $title = trim($_POST['assignment_title'] ?? '');
+    $course_id = intval($_POST['course_id'] ?? 0);
+    $deadline = trim($_POST['deadline'] ?? '');
+    $priority = $_POST['priority'] ?? 'medium';
+    $status = $_POST['status'] ?? 'pending';
+    if (empty($title)) {
+        $errors[] = 'Judul tugas wajib diisi';
+    }
+    if (empty($course_id) || $course_id <= 0) {
+        $errors[] = 'Mata kuliah wajib dipilih';
+    }
+    if (empty($deadline) || !strtotime($deadline)) {
+        $errors[] = 'Deadline tidak valid';
+    }
+    if (empty($errors)) {
+        try {
+            global $pdo;
+            $stmt = $pdo->prepare("UPDATE assignments SET course_id = ?, title = ?, deadline = ?, priority = ?, status = ? WHERE id = ?");
+            $stmt->execute([$course_id, $title, $deadline, $priority, $status, $assignment_id]);
+            header('Location: /admin/assignments.php');
+            exit;
+        } catch (PDOException $e) {
+            $errors[] = 'Gagal memperbarui tugas';
+        }
+    }
+}
+
+$courses = [];
+try {
+    global $pdo;
+    $cstmt = $pdo->prepare('SELECT id, name FROM courses ORDER BY name');
+    $cstmt->execute();
+    $courses = $cstmt->fetchAll();
+} catch (Exception $e) {}
+?>
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tugas - CampusHub</title>
+    <link rel="stylesheet" href="/assets/css/global.css">
+</head>
+<body data-theme="light">
 <div class="padding-x4">
     <h1 class="text-3xl font-bold mb-4">Edit Tugas</h1>
-    
-    <?php if (!$assignment): ?>
-        <div class="alert alert-error">Tugas tidak ditemukan</div>
-    <?php else: ?>
+    <?php if (!empty($errors)): ?>
+        <div class="alert alert-error mb-4">
+            <?php foreach ($errors as $error): ?>
+                <p><?= htmlspecialchars($error) ?></p>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($assignment): ?>
         <form action="/admin/assignments-edit-process.php?id=<?= $assignment['id'] ?>" method="POST" class="max-w-2xl">
-            <input type="hidden" name="original_title" value="<?= htmlspecialchars($assignment['title']) ?>">
-            
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium mb-2">Judul</label>
-                    <input type="text" name="assignment_title" value="<?= htmlspecialchars($assignment['title']) ?>"
-                           class="w-full px-4 py-3 rounded border">
+                    <input type="text" name="assignment_title" value="<?= htmlspecialchars($assignment['title']) ?>" class="w-full px-4 py-3 rounded border">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-2">Mata Kuliah</label>
                     <select name="course_id" class="w-full px-4 py-3 rounded border">
-                        <option value="<?= $assignment['course_id'] ?>"><?= htmlspecialchars($assignment['course_name'] ?? '') ?></option>
-                        <?php try {
-                            $cstmt = $pdo->prepare('SELECT id, name FROM courses ORDER BY name');
-                            $cstmt->execute();
-                            $courses = $cstmt->fetchAll();
-                            foreach ($courses as $c): ?>
-                                <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
-                            <?php endforeach; ?>
-                        } catch (Exception $e) {} ?>
+                        <?php foreach ($courses as $c): ?>
+                            <option value="<?= $c['id'] ?>" <?= $assignment['course_id'] == $c['id'] ? 'selected' : '' ?>><?= htmlspecialchars($c['name']) ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
-            <div>
+            <div class="mb-4">
                 <label class="block text-sm font-medium mb-2">Deskripsi</label>
                 <textarea name="assignment_description" rows="3" class="w-full px-4 py-3 rounded border"><?= htmlspecialchars($assignment['description'] ?? '') ?></textarea>
             </div>
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium mb-2">Deadline</label>
-                    <input type="datetime-local" name="deadline" value="<?= htmlspecialchars($assignment['deadline'] ?? '') ?>"
-                           class="w-full px-4 py-3 rounded border">
+                    <input type="datetime-local" name="deadline" value="<?= htmlspecialchars($assignment['deadline'] ?? '') ?>" class="w-full px-4 py-3 rounded border">
                 </div>
                 <div>
                     <label class="block text-sm font-medium mb-2">Prioritas</label>
@@ -92,10 +127,11 @@ try {
                 </div>
             </div>
             <div class="text-end">
-                <button type="submit" name="update_assignment"
-                        class="w-auto btn btn-primary px-6">Simpan Perubahan</button>
-                <a href="/admin/assignments.php" class="w-auto btn btn-outline px-6 ml-4">Batal</a>
+                <button type="submit" name="update_assignment" class="btn btn-primary px-6">Simpan Perubahan</button>
+                <a href="/admin/assignments.php" class="btn btn-outline px-6 ml-4">Batal</a>
             </div>
         </form>
     <?php endif; ?>
 </div>
+</body>
+</html>

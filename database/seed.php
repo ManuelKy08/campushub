@@ -1,12 +1,6 @@
 <?php
-/**
- * CampusHub - Database Seeding
- * Fungsi: Mengisi database dengan data sample untuk development dan demo
- * Dapat dijalankan melalui PHP script atau MySQL client
- */
 if (!defined('IN_CAMPUSHUB')) die('Akses dilarang');
 
-// Konfigurasi koneksi
 $host = 'localhost';
 $db   = 'campushub';
 $user = 'root';
@@ -21,22 +15,16 @@ $options = [
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
-    
     echo "=== Starting Database Seeding ===\n\n";
     
-    // 1. Insert sample users (admin + mahasiswa)
+    // 1. Insert sample users
     echo "1. Inserting sample users...\n";
-    
-    // Admin user (password: admin123)
     $admin_hash = '$2y$12$PYTB0WawXgYLDBuaFgUaxu1AGKBPbljeViOiex5mKgnrdt51BEc4y';
     $pdo->prepare("
         INSERT INTO users (full_name, nim, email, password_hash, role, program_study, semester, is_active) 
         VALUES (?, ?, ?, ?, ?, ?, ?, 1)
-    ")->execute([
-        'Admin Sistem', '0000001', 'admin@campushub.id', $admin_hash, 'admin', 'Teknologi Informasi', 1
-    ]);
+    ")->execute(['Admin Sistem', '0000001', 'admin@campushub.id', $admin_hash, 'admin', 'Teknologi Informasi', 1]);
     
-    // Sample mahasiswa
     $students = [
         ['Budi Santoso', '210101', 'budi@university.id', 'Sistem Informasi', 4],
         ['Aisha Roisha', '210102', 'aisha@university.id', 'Desain Komunikasi Visual', 2],
@@ -49,11 +37,9 @@ try {
         $pdo->prepare("
             INSERT INTO users (full_name, nim, email, password_hash, role, program_study, semester, is_active) 
             VALUES (?, ?, ?, ?, ?, ?, ?, 1)
-        ")->execute([
-            $student[0], $student[1], $student[2], $admin_hash, 'student', $student[3], $student[4], 1
-        ]);
+        ")->execute([$student[0], $student[1], $student[2], $admin_hash, 'student', $student[3], $student[4], 1]);
     }
-    echo "   - " . count($students) + 1 . " users inserted\n";
+    echo "   - " . (count($students) + 1) . " users inserted\n";
     
     // 2. Insert sample courses
     echo "2. Inserting sample courses...\n";
@@ -96,7 +82,7 @@ try {
     $materials = [
         [1, 'Pendahuluan PHP', 'Pengenalan dasar PHP', 'pdf', null],
         [1, 'Video: Setup XAMPP', 'Cara install dan konfigurasi XAMPP', 'video', 'https://www.youtube.com/watch?v=XAMPP-setup'],
-        [2, 'Bab 1: Normalisasi', 'Bab 1 dari buku Basis Data', 'pdf, null],
+        [2, 'Bab 1: Normalisasi', 'Bab 1 dari buku Basis Data', 'pdf', null],
         [2, 'Video: Tabel Relasi', 'Cara merelasi tabel', 'video', 'https://www.youtube.com/watch?v=DB-relations'],
         [3, 'Video: Konfigurasi Router', 'Cara mengkonfigurasi router Cisco', 'video', 'https://www.youtube.com/watch?v=Router-config'],
     ];
@@ -105,7 +91,7 @@ try {
         $pdo->prepare("
             INSERT INTO materials (course_id, title, description, file_type, url_link) 
             VALUES (?, ?, ?, ?, ?)
-        "]->execute($material);
+        ")->execute($material);
     }
     echo "   - " . count($materials) . " materials inserted\n";
     
@@ -121,7 +107,7 @@ try {
         $pdo->prepare("
             INSERT INTO notes (user_id, course_id, title, content, category) 
             VALUES (?, ?, ?, ?, ?)
-        "]->execute($note);
+        ")->execute($note);
     }
     echo "   - " . count($notes) . " notes inserted\n";
     
@@ -137,7 +123,7 @@ try {
         $pdo->prepare("
             INSERT INTO events (title, description, start_time, end_time, type) 
             VALUES (?, ?, ?, ?, ?)
-        "]->execute($event);
+        ")->execute($event);
     }
     echo "   - " . count($events) . " events inserted\n";
     
@@ -153,7 +139,7 @@ try {
         $pdo->prepare("
             INSERT INTO notifications (user_id, title, message, type) 
             VALUES (?, ?, ?, ?)
-        "]->execute($notif);
+        ")->execute($notif);
     }
     echo "   - " . count($notifications) . " notifications inserted\n";
     
