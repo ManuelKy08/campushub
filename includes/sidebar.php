@@ -61,4 +61,3 @@ if (!defined('IN_CAMPUSHUB')) {
         </a>
     </div>
 </aside>
-EOF

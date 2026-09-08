@@ -19,9 +19,11 @@ $user_id = $user['id'];
     <header class="mb-6">
         <div class="d-flex justify-between align-items-center">
             <h1 class="text-3xl font-bold">Catatan Saya</h1>
-            <a href="/notes-add.php" class="btn btn-primary">
+            <?php if (($user['role'] ?? '') === 'admin'): ?>
+            <a href="/admin/notes-add.php" class="btn btn-primary">
                 <i class='bx bx-plus me-2'></i>Catatan Baru
             </a>
+            <?php endif; ?>
         </div>
     </header>
     
@@ -110,7 +112,9 @@ $user_id = $user['id'];
                 <div class="text-center py-8 text-muted">
                     <i class='bx bx-sticky text-4xl mb-3'></i>
                     <p>Belum ada catatan</p>
-                    <a href="/notes-add.php" class="btn btn-primary mt-3">Tambah Catatan Pertama</a>
+                    <?php if (($user['role'] ?? '') === 'admin'): ?>
+                    <a href="/admin/notes-add.php" class="btn btn-primary mt-3">Tambah Catatan Pertama</a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>

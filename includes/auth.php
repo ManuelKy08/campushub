@@ -6,6 +6,12 @@
  */
 declare(strict_types=1);
 
+// Konstanta penanda bahwa file ini di-include dari dalam aplikasi Campushub
+// (guard untuk mencegah akses langsung ke file include via URL)
+if (!defined('IN_CAMPUSHUB')) {
+    define('IN_CAMPUSHUB', true);
+}
+
 $session_name = 'campushub_user';
 $session_lifetime = 1800;
 

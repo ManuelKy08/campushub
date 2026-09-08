@@ -35,18 +35,6 @@ try {
 }
 ?>
 
-<!DOCTYPE>
-<html lang="id" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($assignment['title'] ?? '') ?> - CampusHub</title>
-    <?php require_once __DIR__ . '/includes/head-starter.php'; ?>
-</head>
-<body data-theme="light">
-    <!-- Header -->
-    <?php require_once __DIR__ . '/includes/header.php'; ?>
-    
     <div class="padding-x4">
         <!-- Breadcrumbs -->
         <nav aria-label="breadcrumb" class="mb-4">
@@ -124,6 +112,3 @@ try {
 </div>
 
 <?php require_once __DIR__ . '/includes/foot-starter.php'; ?>
-</body>
-</html>
-EOF

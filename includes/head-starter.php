@@ -240,4 +240,3 @@ if (!defined('IN_CAMPUSHUB')) die('Akses dilarang');
     </nav>
     
     <main class="main-content">
-EOF

@@ -217,4 +217,3 @@ if ($stored_theme === 'dark') {
             }
         });
     </script>
-EOF

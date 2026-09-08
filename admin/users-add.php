@@ -94,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<?php $page_title = 'Tambah User Baru - CampusHub'; ?>
+<?php require_once __DIR__ . '/../includes/header.php'; ?>
+<?php require_once __DIR__ . '/../includes/sidebar.php'; ?>
+
 <div class="padding-x4">
     <h1 class="text-3xl font-bold mb-4">Tambah User Baru</h1>
     
@@ -161,4 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Simpan User
         </button>
     </form>
+
+<?php require_once __DIR__ . '/../includes/foot-starter.php'; ?>
 </div>

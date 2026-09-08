@@ -18,9 +18,11 @@ $user = get_user();
     <header class="mb-6">
         <div class="d-flex justify-between align-items-center">
             <h1 class="text-3xl font-bold">Mata Kuliah</h1>
-            <a href="/courses-add.php" class="btn btn-primary">
+            <?php if (($user['role'] ?? '') === 'admin'): ?>
+            <a href="/admin/courses-add.php" class="btn btn-primary">
                 <i class='bx bx-plus me-2'></i>Tambah Mata Kuliah
             </a>
+            <?php endif; ?>
         </div>
     </header>
     
@@ -83,7 +85,9 @@ $user = get_user();
                 <div class="text-center py-8 text-muted">
                     <i class='bx bx-folder-open text-4xl mb-3'></i>
                     <p>Belum ada mata kuliah terdaftar</p>
-                    <a href="/courses-add.php" class="btn btn-primary mt-3">Tambah Pertama</a>
+                    <?php if (($user['role'] ?? '') === 'admin'): ?>
+                    <a href="/admin/courses-add.php" class="btn btn-primary mt-3">Tambah Pertama</a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>

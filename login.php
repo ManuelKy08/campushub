@@ -42,15 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="id" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk - CampusHub</title>
-    <?php require_once __DIR__ . '/includes/head-starter.php'; ?>
-</head>
-<body data-theme="light">
+<?php $page_title = 'Masuk - CampusHub'; ?>
+<?php require_once __DIR__ . '/includes/head-starter.php'; ?>
+
     <!-- Hero Section -->
     <section class="min-vh-100 d-flex align-items-center justify-center">
         <div class="container w-100 max-w-md">
@@ -106,12 +100,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         </div>
     </section>
     
-    <!-- Footer -->
-    <footer class="border-t mt-auto py-6 text-center text-muted">
-        <p>Created by Risky Manuel Tamba</p>
-    </footer>
-    
     <?php require_once __DIR__ . '/includes/foot-starter.php'; ?>
-</body>
-</html>
-EOF
