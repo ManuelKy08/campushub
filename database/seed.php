@@ -7,7 +7,7 @@ $user = 'root';
 $pass = '';
 $charset = 'utf8mb4';
 
-$dsn = "mysql:unix_socket=/home/rrsec/mysql-data/mysql.sock;host=$host;dbname=$db;charset=$charset";
+$dsn = "mysql:unix_socket=/home/rrsec/mysql-data/mysqld.sock;host=$host;dbname=$db;charset=$charset";
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_EMULATE_PREPARES => false,

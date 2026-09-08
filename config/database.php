@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-$dsn = 'mysql:unix_socket=/home/rrsec/mysql-data/mysql.sock;dbname=campushub;charset=utf8mb4';
+$dsn = 'mysql:unix_socket=/home/rrsec/mysql-data/mysqld.sock;dbname=campushub;charset=utf8mb4';
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_EMULATE_PREPARES   => false,

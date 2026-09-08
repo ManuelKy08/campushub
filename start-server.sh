@@ -11,16 +11,19 @@
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MYSQL_SOCKET="$HOME/mysql-data/mysql.sock"
+MYSQL_SOCKET="$HOME/mysql-data/mysqld.sock"
 MYSQL_PID="$HOME/mysql-data/mysqld.pid"
 MYSQL_LOG="$HOME/mysql-data/mysqld.log"
 PHP_LOG="$HOME/mysql-data/php-server.log"
-MARIADB_BIN="/opt/ANDRAX/usr/sbin/mariadbd"
+MARIADB_BIN="/usr/bin/mariadbd"
+MARIADB_INSTALL="/usr/bin/mariadb-install-db"
+MYSQL_HOST="127.0.0.1"
+MYSQL_PORT="3306"
 PHP_PORT="${PHP_PORT:-8000}"
 PHP_HOST="${PHP_HOST:-127.0.0.1}"
 
 is_mysql_running() {
-    [ -S "$MYSQL_SOCKET" ] && kill -0 "$(cat "$MYSQL_PID" 2>/dev/null)" 2>/dev/null
+    [ -S "$MYSQL_SOCKET" ] && pgrep -x mariadbd >/dev/null 2>&1
 }
 
 is_php_running() {
@@ -38,16 +41,17 @@ start() {
         mkdir -p "$HOME/mysql-data"
         if [ ! -d "$HOME/mysql-data/mysql" ]; then
             echo "  [..] Inisialisasi data dir pertama kali..."
-            /opt/ANDRAX/usr/bin/mariadb-install-db --basedir=/opt/ANDRAX/usr \
+            "$MARIADB_INSTALL" \
                 --datadir="$HOME/mysql-data" --user="$(whoami)" >/dev/null 2>&1 || true
         fi
         nohup "$MARIADB_BIN" \
-            --basedir=/opt/ANDRAX/usr \
             --datadir="$HOME/mysql-data" \
             --user="$(whoami)" \
-            --port=3306 \
+            --port="$MYSQL_PORT" \
+            --bind-address="$MYSQL_HOST" \
             --socket="$MYSQL_SOCKET" \
             --pid-file="$MYSQL_PID" \
+            --skip-grant-tables \
             --log-error="$MYSQL_LOG" \
             > "$HOME/mysql-data/server.out" 2>&1 &
         for i in $(seq 1 30); do
@@ -58,16 +62,17 @@ start() {
             echo "  [ERROR] MariaDB gagal start. Cek log: $MYSQL_LOG"
             exit 1
         fi
-        echo "  [OK] MariaDB jalan (port 3306)"
+        echo "  [OK] MariaDB jalan (port $MYSQL_PORT, socket: $MYSQL_SOCKET)"
     fi
 
     # 2) Import database schema
     php -d extension=pdo_mysql -d pdo_mysql.default_socket="$MYSQL_SOCKET" -r '
         $sock = $argv[1];
         try {
-            $p = new PDO("mysql:unix_socket=$sock;charset=utf8mb4", "rrsec", "");
+            $p = new PDO("mysql:unix_socket=$sock;charset=utf8mb4", "root", "");
             $p->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $p->exec("ALTER USER \"root\"@\"localhost\" IDENTIFIED VIA mysql_native_password USING PASSWORD(\"\")");
+            // best-effort: set root tanpa password (gagal diabaikan saat --skip-grant-tables)
+            try { $p->exec("ALTER USER \"root\"@\"localhost\" IDENTIFIED VIA mysql_native_password USING PASSWORD(\"\")"); } catch (Exception $e) {}
             $p->exec("CREATE DATABASE IF NOT EXISTS campushub");
             $has = $p->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=\"campushub\" AND table_name=\"users\"")->fetchColumn();
             if (!$has) {
@@ -124,7 +129,7 @@ stop() {
         echo "  [OK] PHP server dimatikan"
     fi
     if is_mysql_running; then
-        kill "$(cat "$MYSQL_PID" 2>/dev/null)" 2>/dev/null || true
+        kill "$(cat "$MYSQL_PID" 2>/dev/null)" 2>/dev/null || pkill -x mariadbd 2>/dev/null || true
         sleep 2
         echo "  [OK] MariaDB dimatikan"
     else
